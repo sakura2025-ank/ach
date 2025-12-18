@@ -24,7 +24,7 @@
         h1 { text-align: center; margin-bottom: 20px; }
         h2 { text-align: center; font-size: 18px; color: #8c5e5e; margin-bottom: 30px; text-shadow: 1px 1px 0 #fff; }
 
-        /* --- 検索ボックスのスタイル（追加部分） --- */
+        /* --- 検索ボックスのスタイル --- */
         .search-container {
             text-align: center;
             margin-bottom: 40px;
@@ -101,12 +101,12 @@
             background-color: #a0d080; top: -8px; left: -8px; transform: rotate(75deg);
         }
 
-        /* --- ページネーション（変更部分） --- */
+        /* --- ページネーション --- */
         .pagination {
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-wrap: wrap; /* スマホで折り返すように */
+            flex-wrap: wrap; 
             margin-top: 40px;
             gap: 10px;
         }
@@ -161,19 +161,17 @@
         </h1>
         <h2>『軌跡と未来、そして君と』<br><span style="font-size: 0.9em; font-weight: normal;">～あなたにとっての、あの日のサクラ大戦～</span></h2>
 
-        <!-- ★検索ボックスを追加 -->
+        <!-- 検索ボックス（プレースホルダー変更） -->
         <div class="search-container">
-            <input type="text" id="searchInput" class="search-input" placeholder="名前で検索..." oninput="filterData()">
+            <input type="text" id="searchInput" class="search-input" placeholder="名前や推しキャラで検索..." oninput="filterData()">
         </div>
 
         <!-- コメントエリア -->
         <div id="comments-area"></div>
         <div id="noResult" class="no-result" style="display: none;">該当するコメントは見つかりませんでした。</div>
 
-        <!-- ★ページ切り替えボタン（番号付き） -->
-        <div class="pagination" id="pagination-container">
-            <!-- JavaScriptでここにボタンを生成します -->
-        </div>
+        <!-- ページ切り替えボタン -->
+        <div class="pagination" id="pagination-container"></div>
         
     </div>
 
@@ -1579,7 +1577,7 @@ PS2版サクラ大戦熱き血潮に第5章で廃墟に飾られた絵画を数�
 ドリームキャスト本体を2010年に買ったのもいい思い出です。(これも発売後10年越し?<br><br>
 
 そしてなぜさくら推しなのかは<br>
-初プレイ時は攻略したのもありますが<br>
+初プレイ時に攻略したのもありますが<br>
 どの年代、いつでもどんな人にも愛されるキャラクターであり続けるからって気がします。<br>
 私の場合ですと<br>
 初プレイ時はカッコイイお姉さん<br>
@@ -1694,6 +1692,13 @@ favorite song.`,
 あまり人気ないのかな……なんて思ってましたけど……<br>
 クールだけど可愛い一面もある、こんなカッコいい女性が人気ないわけないですよね(笑)。<br>
 普段着姿も好きですけど、初代の戦闘服姿が一番好きです、カッコいいので(笑)。`,
+                q2: `初代サクラ大戦<br>
+全キャラクターのエンディングを迎えたあとのフィナーレ`,
+                q3: `友人たちがサクラ大戦の話題で盛り上がるも<br>
+サターンを持ってなかったために話題についていけず……<br>
+話題についていくため、と軽い気持ちで本体ごと友人から借りてプレイ。<br>
+……みるみるハマってしまい友人たちの誰もやってない全キャラでエンディング(笑)。<br>
+最後の舞台挨拶に涙しちゃいました。`,
                 type: "left"
             },
             {
@@ -2079,14 +2084,24 @@ Fの説明等が流れる中で、ほぼ発売版と同じオープニング「�
             }  
         ];
 
+        // =========================================================
+        // ★★★ 制御ロジック（フィルタ・ページネーション・ランダム） ★★★
+        // =========================================================
 
-        // =========================================================
-        // ★★★ 制御ロジック（フィルタ・ページネーション） ★★★
-        // =========================================================
+        // 配列をランダムにシャッフルする関数
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // ページロード時にシャッフル実行
+        shuffleArray(commentsData);
         
         const itemsPerPage = 10;
         let currentPage = 1;
-        let filteredData = [...commentsData]; // 初期状態は全データ
+        let filteredData = [...commentsData]; // 初期状態は全データ（シャッフル済み）
 
         const commentsArea = document.getElementById('comments-area');
         const paginationContainer = document.getElementById('pagination-container');
@@ -2103,17 +2118,18 @@ Fの説明等が流れる中で、ほぼ発売版と同じオープニング「�
             });
         }, options);
 
-        // 検索機能
+        // 検索機能（修正済み）
         function filterData() {
             const query = document.getElementById('searchInput').value.trim().toLowerCase();
 
             if (!query) {
-                // 空なら全件
+                // 空なら全件（現在のシャッフル状態を維持）
                 filteredData = [...commentsData];
             } else {
-                // 名前でフィルタ（大文字小文字無視）
+                // 名前 OR 推しキャラ名でフィルタ（大文字小文字無視、部分一致）
                 filteredData = commentsData.filter(item => 
-                    item.name.toLowerCase().includes(query)
+                    item.name.toLowerCase().includes(query) ||
+                    item.oshi.toLowerCase().includes(query)
                 );
             }
 
