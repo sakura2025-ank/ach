@@ -21,8 +21,29 @@
             backdrop-filter: blur(5px);
         }
 
-        h1 { text-align: center; margin-bottom: 40px; }
-        h2 { text-align: center; font-size: 18px; color: #8c5e5e; margin-bottom: 40px; text-shadow: 1px 1px 0 #fff; }
+        h1 { text-align: center; margin-bottom: 20px; }
+        h2 { text-align: center; font-size: 18px; color: #8c5e5e; margin-bottom: 30px; text-shadow: 1px 1px 0 #fff; }
+
+        /* --- 検索ボックスのスタイル（追加部分） --- */
+        .search-container {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .search-input {
+            padding: 10px 15px;
+            width: 80%;
+            max-width: 300px;
+            border: 2px solid #ffb7c5;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+            color: #593030;
+        }
+        .search-input:focus {
+            border-color: #e08090;
+            box-shadow: 0 0 8px rgba(255, 183, 197, 0.5);
+        }
 
         /* --- 吹き出しアニメーション --- */
         .comment-item {
@@ -80,37 +101,55 @@
             background-color: #a0d080; top: -8px; left: -8px; transform: rotate(75deg);
         }
 
-        /* --- ページネーション（ボタン）のデザイン --- */
+        /* --- ページネーション（変更部分） --- */
         .pagination {
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-wrap: wrap; /* スマホで折り返すように */
             margin-top: 40px;
-            gap: 20px;
+            gap: 10px;
         }
         .page-btn {
-            padding: 10px 20px;
-            background-color: #ffb7c5;
-            color: #fff;
-            border: none;
-            border-radius: 20px;
+            padding: 8px 14px;
+            background-color: #fff;
+            color: #d64a6e;
+            border: 1px solid #ffb7c5;
+            border-radius: 8px;
             font-size: 14px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s;
             font-weight: bold;
         }
         .page-btn:hover {
+            background-color: #fff0f5;
+        }
+        /* 現在のページ */
+        .page-btn.active {
+            background-color: #e08090;
+            color: #fff;
+            border-color: #e08090;
+        }
+        /* 前へ・次へボタン */
+        .nav-btn {
+            background-color: #ffb7c5;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+        .nav-btn:hover {
             background-color: #e08090;
         }
-        .page-btn:disabled {
+        .nav-btn:disabled {
             background-color: #eee;
             color: #aaa;
             cursor: not-allowed;
         }
-        .page-info {
-            font-size: 14px;
+        .no-result {
+            text-align: center;
             color: #8c5e5e;
-            font-weight: bold;
+            margin-top: 20px;
         }
 
     </style>
@@ -122,21 +161,25 @@
         </h1>
         <h2>『軌跡と未来、そして君と』<br><span style="font-size: 0.9em; font-weight: normal;">～あなたにとっての、あの日のサクラ大戦～</span></h2>
 
-        <!-- ここにJavaScriptで吹き出しが生成されます -->
-        <div id="comments-area"></div>
+        <!-- ★検索ボックスを追加 -->
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="名前で検索..." oninput="filterData()">
+        </div>
 
-        <!-- ページ切り替えボタン -->
-        <div class="pagination">
-            <button id="prevBtn" class="page-btn" onclick="changePage(-1)">＜ 前へ</button>
-            <span id="pageInfo" class="page-info"></span>
-            <button id="nextBtn" class="page-btn" onclick="changePage(1)">次へ ＞</button>
+        <!-- コメントエリア -->
+        <div id="comments-area"></div>
+        <div id="noResult" class="no-result" style="display: none;">該当するコメントは見つかりませんでした。</div>
+
+        <!-- ★ページ切り替えボタン（番号付き） -->
+        <div class="pagination" id="pagination-container">
+            <!-- JavaScriptでここにボタンを生成します -->
         </div>
         
     </div>
 
     <script>
         // =========================================================
-        // ★★★ データ部分（修正済み） ★★★
+        // ★★★ データ部分 ★★★
         // =========================================================
         const commentsData = [
             {
@@ -1619,12 +1662,6 @@ favorite song.`,
 歌声・ダンス・立ち居振る舞い全てに魅了されました<br>
 そして、ゲームなどでマリアさんの物語を知ることでどんどん沼にはまっていきました
 `,
-                q2: `サクラ大戦武道館ライブ2・「愛が香るころに」`,
-                q3: `すみれさんか引退された後に歌謡ショウを知り「新編・八犬伝」より観劇を始めた私にとって、帝都花組さんが8人勢ぞろいする姿を見れるの
-は夢のまた夢、見たいけど一生見れないものだと思っていました<br>
-なので武道館の大階段に花組さんが並んだ姿が目に入った瞬間感動で自然と涙が出てきてずっと嬉しく泣いていました<br>
-もちろんその後の9人揃った「これがレビュウ 完全版」も嬉しくて泣いていました<br>
-14年経った今でもあの時の感動を思い出せるほどです`,
                 type: "left"
             },
             {
@@ -1657,13 +1694,6 @@ favorite song.`,
 あまり人気ないのかな……なんて思ってましたけど……<br>
 クールだけど可愛い一面もある、こんなカッコいい女性が人気ないわけないですよね(笑)。<br>
 普段着姿も好きですけど、初代の戦闘服姿が一番好きです、カッコいいので(笑)。`,
-                q2: `初代サクラ大戦<br>
-全キャラクターのエンディングを迎えたあとのフィナーレ`,
-                q3: `友人たちがサクラ大戦の話題で盛り上がるも<br>
-サターンを持ってなかったために話題についていけず……<br>
-話題についていくため、と軽い気持ちで本体ごと友人から借りてプレイ。<br>
-……みるみるハマってしまい友人たちの誰もやってない全キャラでエンディング(笑)。<br>
-最後の舞台挨拶に涙しちゃいました。`,
                 type: "left"
             },
             {
@@ -2051,18 +2081,18 @@ Fの説明等が流れる中で、ほぼ発売版と同じオープニング「�
 
 
         // =========================================================
-        // ★★★ ページネーション（ページ切り替え）の制御 ★★★
+        // ★★★ 制御ロジック（フィルタ・ページネーション） ★★★
         // =========================================================
         
-        const itemsPerPage = 10; // ★1ページに表示する数（ここを変更できます）
+        const itemsPerPage = 10;
         let currentPage = 1;
+        let filteredData = [...commentsData]; // 初期状態は全データ
 
         const commentsArea = document.getElementById('comments-area');
-        const pageInfo = document.getElementById('pageInfo');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
+        const paginationContainer = document.getElementById('pagination-container');
+        const noResultDiv = document.getElementById('noResult');
 
-        // 監視の設定オプション
+        // 監視オプション
         const options = { root: null, rootMargin: "0px 0px -20% 0px", threshold: 0 };
         const observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
@@ -2073,17 +2103,42 @@ Fの説明等が流れる中で、ほぼ発売版と同じオープニング「�
             });
         }, options);
 
+        // 検索機能
+        function filterData() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+
+            if (!query) {
+                // 空なら全件
+                filteredData = [...commentsData];
+            } else {
+                // 名前でフィルタ（大文字小文字無視）
+                filteredData = commentsData.filter(item => 
+                    item.name.toLowerCase().includes(query)
+                );
+            }
+
+            // ページを1に戻して再描画
+            currentPage = 1;
+            renderPage(currentPage);
+        }
+
         // ページを描画する関数
         function renderPage(page) {
-            // 表示エリアをクリア
             commentsArea.innerHTML = "";
             
-            // 全データから、今回のページに表示する分だけを切り出す
+            // 検索結果がない場合
+            if (filteredData.length === 0) {
+                noResultDiv.style.display = 'block';
+                paginationContainer.innerHTML = ''; // ページネーションも消す
+                return;
+            } else {
+                noResultDiv.style.display = 'none';
+            }
+
             const start = (page - 1) * itemsPerPage;
             const end = start + itemsPerPage;
-            const pageData = commentsData.slice(start, end);
+            const pageData = filteredData.slice(start, end);
 
-            // データをHTMLにして追加
             pageData.forEach(data => {
                 const html = `
                     <div class="comment-item ${data.type}">
@@ -2102,45 +2157,68 @@ Fの説明等が流れる中で、ほぼ発売版と同じオープニング「�
                 commentsArea.insertAdjacentHTML('beforeend', html);
             });
 
-            // 新しく追加された要素をアニメーション監視対象にする
+            // アニメーション適用
             setTimeout(() => {
                 document.querySelectorAll('.comment-item').forEach(item => {
                     observer.observe(item);
                 });
             }, 50);
 
-            // ボタンの状態とページ番号の表示を更新
-            updatePaginationControls();
+            // ページネーション作成
+            createPagination();
             
-            // ページトップへスクロール（切り替え時に上に戻す）
+            // ページトップへスクロール
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ページ送りボタンの更新
-        function updatePaginationControls() {
-            const totalPages = Math.ceil(commentsData.length / itemsPerPage);
-            
-            pageInfo.textContent = `${currentPage} / ${totalPages}`;
-            
-            // 1ページ目なら「前へ」を無効化
+        // 番号付きページネーション生成
+        function createPagination() {
+            paginationContainer.innerHTML = '';
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+            // 1ページのみならページネーション不要
+            if (totalPages <= 1) return;
+
+            // 「前へ」ボタン
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = '＜';
+            prevBtn.className = 'nav-btn';
             prevBtn.disabled = (currentPage === 1);
-            
-            // 最後のページなら「次へ」を無効化
+            prevBtn.onclick = () => changePage(-1);
+            paginationContainer.appendChild(prevBtn);
+
+            // 数字ボタン
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                btn.onclick = () => {
+                    currentPage = i;
+                    renderPage(currentPage);
+                };
+                paginationContainer.appendChild(btn);
+            }
+
+            // 「次へ」ボタン
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = '＞';
+            nextBtn.className = 'nav-btn';
             nextBtn.disabled = (currentPage === totalPages);
+            nextBtn.onclick = () => changePage(1);
+            paginationContainer.appendChild(nextBtn);
         }
 
-        // ボタンが押された時の処理
+        // 前後移動用
         function changePage(delta) {
-            const totalPages = Math.ceil(commentsData.length / itemsPerPage);
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
             const newPage = currentPage + delta;
-
             if (newPage >= 1 && newPage <= totalPages) {
                 currentPage = newPage;
                 renderPage(currentPage);
             }
         }
 
-        // ★最初の実行（1ページ目を表示）
+        // 初期表示
         renderPage(currentPage);
 
     </script>
