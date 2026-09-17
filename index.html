@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>「あなたにとっての、あの日のサクラ大戦」</title>
+    <title>「君とつないだ30周年、サクラ大戦への愛を一言！」</title>
     <style>
         /* --- ベーススタイル --- */
         body {
@@ -159,11 +159,11 @@
         <h1 style="margin-top: 0;">
             <img src="https://i.imgur.com/FqoUTDa.jpeg" alt="サクラ大戦アートフェスティバル" style="max-width: 100%; height: auto; display: block; margin: 0 auto;">
         </h1>
-        <h2>『軌跡と未来、そして君と』<br><span style="font-size: 0.9em; font-weight: normal;">～あなたにとっての、あの日のサクラ大戦～</span></h2>
+        <h2>『花組アートレビュウ！』<br><span style="font-size: 0.9em; font-weight: normal;">～君とつないだ30周年、サクラ大戦への愛を一言！～</span></h2>
 
         <!-- 検索ボックス（プレースホルダー変更） -->
         <div class="search-container">
-            <input type="text" id="searchInput" class="search-input" placeholder="名前や推しキャラで検索..." oninput="filterData()">
+            <input type="text" id="searchInput" class="search-input" placeholder="名前で検索..." oninput="filterData()">
         </div>
 
         <!-- コメントエリア -->
@@ -181,12 +181,9 @@
         // =========================================================
         const commentsData = [
             {
-                name: "Rudolf",
-                icon: "R",
-                oshi: "真宮寺さくら",
-                q1: "サターン版が出た時から30年近くの推しです。大和なでしこな点がよろし(ジト目含む)",
-                q2: "アートフェス初回と動燃の海神別荘、そのフィナーレは本当にすごかった。最高到達点の一つですね",
-                q3: "演者と歌と演出がここまで高みで一体化したのには感動しました",
+                name: "ひなた",
+                icon: "ひ",
+                oshi: "諸先輩方がここまで伝えてきた、美しき日本そして素晴らしい世界を描いた、素敵な作品をこれからも後世に伝えていきたい!",
                 type: "left"
             },
             {
@@ -2436,10 +2433,8 @@ EDの黄色の水着姿がめちゃくちゃ可愛いです<br><br>
                         <div class="icon">${data.icon}</div>
                         <div>
                             <div class="bubble-content">
-                                【推しキャラ】<br><strong>${data.oshi}</strong><br>
-                                【1を選んだ理由】<br>${data.q1}<br>
-                                【一番記憶に残るシーン】<br>${data.q2}<br>
-                                【3の理由】<br>${data.q3}
+                                【君とつないだ30周年、サクラ大戦への愛を一言！】<br><strong>${data.oshi}</strong><br>
+                                【名前】<br>${data.q1}<br>
                             </div>
                             <div class="meta-info">${data.name}</div>
                         </div>
