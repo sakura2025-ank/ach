@@ -1,246 +1,65 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>「君とつないだ30周年、サクラ大戦への愛を一言！」</title>
-    <style>
-        /* --- ベーススタイル --- */
-        body {
-            font-family: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "HGS Mincho E", "Helvetica Neue", Arial, serif;
-            margin: 0; padding: 0; color: #333;
-            background: url('https://i.imgur.com/isf7ItI.png') no-repeat center center fixed;
-            background-size: cover; 
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 700px; margin: 0 auto; padding: 40px 20px 50px;
-            min-height: 100vh;
-            background-color: rgba(255, 252, 253, 0.85); 
-            backdrop-filter: blur(5px);
-        }
-
-        h1 { text-align: center; margin-bottom: 20px; }
-        h2 { text-align: center; font-size: 18px; color: #8c5e5e; margin-bottom: 30px; text-shadow: 1px 1px 0 #fff; }
-
-        /* --- 検索ボックスのスタイル --- */
-        .search-container {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .search-input {
-            padding: 10px 15px;
-            width: 80%;
-            max-width: 300px;
-            border: 2px solid #ffb7c5;
-            border-radius: 25px;
-            font-size: 16px;
-            outline: none;
-            transition: all 0.3s;
-            color: #593030;
-        }
-        .search-input:focus {
-            border-color: #e08090;
-            box-shadow: 0 0 8px rgba(255, 183, 197, 0.5);
-        }
-
-        /* --- 吹き出しアニメーション --- */
-        .comment-item {
-            display: flex; align-items: flex-end; margin-bottom: 30px;
-            opacity: 0; transform: translateY(30px);
-            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .comment-item.visible { opacity: 1; transform: translateY(0); }
-
-        /* --- アイコン --- */
-        .icon {
-            width: 44px; height: 44px; background-color: #ccc; border-radius: 50%;
-            flex-shrink: 0; display: flex; justify-content: center; align-items: center;
-            font-size: 18px; color: white; font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15); border: 2px solid #fff; z-index: 2;
-        }
-
-        /* --- 吹き出し本体 --- */
-        .bubble-content {
-            max-width: 100%; padding: 15px 20px; position: relative;
-            font-size: 15px; line-height: 1.6;
-            box-shadow: 0 4px 10px rgba(255, 182, 193, 0.3); color: #593030;
-        }
-        .bubble-content strong { color: #d64a6e; font-weight: bold; }
-        
-        /* 花びら装飾 */
-        .bubble-content::after {
-            content: ''; position: absolute; width: 20px; height: 20px;
-            background-color: #ff9eb5; border-radius: 100% 0 100% 0;
-            opacity: 0.8; pointer-events: none;
-        }
-        .meta-info { font-size: 11px; color: #a07070; margin: 6px 8px 0; }
-
-        /* --- 左（通常） --- */
-        .comment-item.left .bubble-content {
-            background: linear-gradient(135deg, #fff0f5 0%, #ffdde6 100%);
-            border: 1px solid #ffccd7; margin-left: 15px;
-            border-radius: 20px 40px 20px 2px; 
-        }
-        .comment-item.left .icon { background-color: #e090a0; }
-        .comment-item.left .bubble-content::after {
-            top: -8px; right: -8px; transform: rotate(-15deg);
-        }
-
-        /* --- 右（強調） --- */
-        .comment-item.right { flex-direction: row-reverse; }
-        .comment-item.right .bubble-content {
-            background: linear-gradient(135deg, #fafff5 0%, #ecf7e4 100%);
-            border: 1px solid #d0e0c0; margin-right: 15px;
-            border-radius: 40px 20px 2px 20px;
-        }
-        .comment-item.right .meta-info { text-align: right; }
-        .comment-item.right .icon { background-color: #88c070; }
-        .comment-item.right .bubble-content::after {
-            background-color: #a0d080; top: -8px; left: -8px; transform: rotate(75deg);
-        }
-
-        /* --- ページネーション --- */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap; 
-            margin-top: 40px;
-            gap: 10px;
-        }
-        .page-btn {
-            padding: 8px 14px;
-            background-color: #fff;
-            color: #d64a6e;
-            border: 1px solid #ffb7c5;
-            border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-        }
-        .page-btn:hover {
-            background-color: #fff0f5;
-        }
-        /* 現在のページ */
-        .page-btn.active {
-            background-color: #e08090;
-            color: #fff;
-            border-color: #e08090;
-        }
-        /* 前へ・次へボタン */
-        .nav-btn {
-            background-color: #ffb7c5;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-        }
-        .nav-btn:hover {
-            background-color: #e08090;
-        }
-        .nav-btn:disabled {
-            background-color: #eee;
-            color: #aaa;
-            cursor: not-allowed;
-        }
-        .no-result {
-            text-align: center;
-            color: #8c5e5e;
-            margin-top: 20px;
-        }
-
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1 style="margin-top: 0;">
-            <img src="https://i.imgur.com/FqoUTDa.jpeg" alt="サクラ大戦アートフェスティバル" style="max-width: 100%; height: auto; display: block; margin: 0 auto;">
-        </h1>
-        <h2>『花組アートレビュウ！』<br><span style="font-size: 0.9em; font-weight: normal;">～君とつないだ30周年、サクラ大戦への愛を一言！～</span></h2>
-
-        <!-- 検索ボックス（プレースホルダー変更） -->
-        <div class="search-container">
-            <input type="text" id="searchInput" class="search-input" placeholder="名前で検索..." oninput="filterData()">
-        </div>
-
-        <!-- コメントエリア -->
-        <div id="comments-area"></div>
-        <div id="noResult" class="no-result" style="display: none;">該当するコメントは見つかりませんでした。</div>
-
-        <!-- ページ切り替えボタン -->
-        <div class="pagination" id="pagination-container"></div>
-        
-    </div>
-
-    <script>
-        // =========================================================
-        // ★★★ データ部分 ★★★
-        // =========================================================
-        const commentsData = [
+const commentsData = [
             {
                 name: "ひなた",
                 icon: "ひ",
-                oshi: "諸先輩方がここまで伝えてきた、美しき日本そして素晴らしい世界を描いた、素敵な作品をこれからも後世に伝えていきたい!",
+                oshi: `諸先輩方がここまで伝えてきた、美しき日本そして素晴らしい世界を描いた、素敵な作品をこれからも後世に伝えていきたい!`,
                 type: "left"
             },
             {
                 name: "紫水",
                 icon: "紫",
-                oshi: "30周年おめでとうございます！！太正桜に浪漫の嵐はまだまだ続くと信じています。これからも応援しています！",
+                oshi: `30周年おめでとうございます！！太正桜に浪漫の嵐はまだまだ続くと信じています。これからも応援しています！`,
                 type: "left"
             },
             {
                 name: "やまま",
                 icon: "や",
-                oshi: "始めてやった恋愛ゲーム、セガサターンから始まり今もゲーマー続けてます！サクラ吹雪が舞う度に思い出せる色褪せぬ青春作品です！",
+                oshi: `始めてやった恋愛ゲーム、セガサターンから始まり今もゲーマー続けてます！サクラ吹雪が舞う度に思い出せる色褪せぬ青春作品です！`,
                 type: "left"
             },
             {
                 name: "いのじん隊長",
                 icon: "い",
-                oshi: "サクラ大戦で一番好きなヒロインは織姫です。最初はツンツンしてるけど徐々に丸くなっていく所が一番可愛いと思います。<br>
-                    サクラ大戦2終盤でのキスシーンは今でも忘れられません",
+                oshi: `サクラ大戦で一番好きなヒロインは織姫です。最初はツンツンしてるけど徐々に丸くなっていく所が一番可愛いと思います。<br>
+サクラ大戦2終盤でのキスシーンは今でも忘れられません`,
                 type: "left"
             },
             {
                 name: "桜子",
                 icon: "桜",
-                oshi: "サクラ大戦はまさに世界そのもの！<br>
+                oshi: `サクラ大戦はまさに世界そのもの！<br>
 本当にリアルで人生の半分以上をサクラと共に歩んできました♪<br><br>
 
-私達のこの現実世界と平行して存在する､もう1つの太正世界だな～と思っています。",
+私達のこの現実世界と平行して存在する､もう1つの太正世界だな～と思っています。`,
                 type: "left"
             },
             {
                 name: "アンソン",
                 icon: "ア",
-                oshi: "『帝國華$(珍團，出$(珍!!』",
+                oshi: `『帝國華$(珍團，出$(珍!!』`,
                 type: "left"
             },
             {
                 name: "ファラ",
                 icon: "ファ",
-                oshi: "歌謡ショウ時代から応援し続けてはや幾年。関係者様、演者様と等しく我々もそれなりの歳になりました。<br>
+                oshi: `歌謡ショウ時代から応援し続けてはや幾年。関係者様、演者様と等しく我々もそれなりの歳になりました。<br>
 歌謡ショウで知り合った学生さんが社会人になり「もしかして歌謡ショウで御一緒した方ですか？子供だった私にお菓子やおにぎりを分けて下<br>
 さった？」という奇跡が起こるサクラフェスティバルは毎年楽しみにしております。<br>
-難病発病のせいで参加が難しい事も増えましたが、これからも応援するつもりです。",
+難病発病のせいで参加が難しい事も増えましたが、これからも応援するつもりです。`,
                 type: "left"
             },
             {
                 name: "螢ジロー",
                 icon: "螢",
-                oshi: "愛があるのかは自分にはわかりませんが、サクラ大戦の設定資料集と太正の年表と前夜小説からずっと設定オタクとして生き続け、最近は太正<br>
+                oshi: `愛があるのかは自分にはわかりませんが、サクラ大戦の設定資料集と太正の年表と前夜小説からずっと設定オタクとして生き続け、最近は太正<br>
 浪漫街道・新章の聖地巡礼や概念として1920年代の各国の古銭や紙幣を集めています。30周年おめでとうございます、そして40周年<br>
-をお祈り申し上げます。",
+をお祈り申し上げます。`,
                 type: "left"
             },
             {
                 name: "totsu",
                 icon: "t",
-                oshi: "サクラ大戦30周年おめでとう御座います！！私がサクラ大戦を知ったのは中学生の時。ゲームではなくてテレビアニメからでした！あの時初<br>
+                oshi: `サクラ大戦30周年おめでとう御座います！！私がサクラ大戦を知ったのは中学生の時。ゲームではなくてテレビアニメからでした！あの時初<br>
 めて聴いたオープニングの神曲たるや…なんせ今聞いても色褪せない素晴らしい曲だと思っております。そして作品の世界観、キャラクター<br>
 や声優さんの魅力。そしてなんと言っても歌謡ショウ！！もうどれをとっても神ってますよね。。。こんな作品他にありません！もちろん3<br>
 0年近く経った今もどハマりしています。中学生の頃にアニメだけでなく歌謡ショウやゲームの展開もしていたのですがゲームはやれる機械<br>
@@ -248,49 +67,46 @@
 何度も見ていた記憶があります（特に紅蜥蜴）。あの頃から30年近く経った今、まだサクラ（横山智佐さん）が浅草でライブステージを公<br>
 演して下さり感謝の気持ちを抱えながら欠かさず通っております！そしてゲームもやりました！！これからもサクラ大戦は自分を青春時代に<br>
 戻してくれる大事な大事な作品です。ずっとこの素敵な作品が愛され続けますように。そしてこれからも沢山の企画を是非よろしくお願いし<br>
-ます！",
+ます！`,
                 type: "left"
             },
             {
                 name: "はるか",
                 icon: "は",
-                oshi: "サクラ大戦は人生だ！！！",
+                oshi: `サクラ大戦は人生だ！！！`,
                 type: "left"
             },
             {
                 name: "めせせ",
                 icon: "め",
-                oshi: "サクラの影響で芝居の道を歩んでいます<br>
-ありがとうサクラ大戦！",
+                oshi: `サクラの影響で芝居の道を歩んでいます<br>
+ありがとうサクラ大戦！`,
                 type: "left"
             },
             {
                 name: "なんしー",
                 icon: "な",
-                oshi: "レニ・ミルヒシュトラーセ",
-                q1: `活動写真で一目惚れしました`,
-                q2: `新・青い鳥のオープニング`,
-                q3: `初めて観に行けた歌謡ショウだったので、やっと見に来れた！これが歌謡ショウなんだ！と感動して涙が溢れて来たのを今でも覚えています。<br>レビュー・新青い鳥のあのイントロを聞くと今でも胸が熱くなります。`,
+                oshi: `活動写真で一目惚れしました。<br>初めて観に行けた歌謡ショウ「新・青い鳥」だったので、やっと見に来れた！これが歌謡ショウなんだ！と感動して涙が溢れて来たのを今でも覚えています。<br>あのイントロを聞くと今でも胸が熱くなります。`,
                 type: "left"
             },
             {
                 name: "スバーン大佐",
                 icon: "ス",
-                oshi: "私は今年新社会人になったのですが、なんとその年にサクラ大戦が30周年を迎えました！<br>
+                oshi: `私は今年新社会人になったのですが、なんとその年にサクラ大戦が30周年を迎えました！<br>
 新社会人になって大変な毎日ですが30周年を記念したイベントやグッズがどんどん発表されているのを見ると仕事を頑張ったご褒美を貰って<br>
-いるような気持ちになります！",
+いるような気持ちになります！`,
                 type: "left"
             },
             {
                 name: "枝まめご飯",
                 icon: "枝",
-                oshi: "いつだって心に春を届けてくれました。30周年おめでとうございます。",
+                oshi: `いつだって心に春を届けてくれました。30周年おめでとうございます。`,
                 type: "left"
             },
             {
                 name: "河内 勇也",
                 icon: "河",
-                oshi: "自分は小さい時に、初代サクラ大戦のアニメをうっすら観た記憶あり、ゲキテイ!は何度か聴いていて、今大人になった時に、作品に触れる様<br>
+                oshi: `自分は小さい時に、初代サクラ大戦のアニメをうっすら観た記憶あり、ゲキテイ!は何度か聴いていて、今大人になった時に、作品に触れる様<br>
 になっていったのですが、サクラ大戦というのを知る様になったのは、なんとなく藤岡弘、さんが扮するせがた三四郎のCM集をYouTu<br>
 beで観てたら、真宮寺さくらさんがリアルに出てて、女優さんかな?と思って調べたら、声優の横山智佐さんと出て、それからさくらさん<br>
 と智佐さんに興味が湧いて、今では大ファンとなり、毎年恒例の真夏のフェスに行く位、サクラ大戦が好きなりました。<br>
@@ -299,354 +115,195 @@ beで観てたら、真宮寺さくらさんがリアルに出てて、女優さ
 肝心のゲームはやった事が無く、セガハード(SSとDC)とPS2とソフトが、今は若干プレ値付いて、自分には高くて買えず、<br>
 出来ればSwitchやPS5に移植して欲しいです。<br>
 サクラ大戦と自分はほぼ同い年なので、同じ時を感じて、もっとサクラ大戦をより知っておきたいです。<br>
-拙い文章ですが、自分と同じ共感が持てる方がいらしたら幸いです。",
+拙い文章ですが、自分と同じ共感が持てる方がいらしたら幸いです。`,
                 type: "left"
             },
             {
                 name: "まりもっこ",
                 icon: "ま",
-                oshi: "サクラ大戦は私の青春。何年経っても色褪せない、大大大好きな作品です。
-改めまして、30周年おめでとうございます！",
+                oshi: `サクラ大戦は私の青春。何年経っても色褪せない、大大大好きな作品です。
+改めまして、30周年おめでとうございます！`,
                 type: "left"
             },
             {
                 name: "Ryu Chan",
                 icon: "R",
-                oshi: "画面を見ないと思い出せないゲームもありますが、『サクラ大戦』は前奏が流れただけで、30年前の記憶が自然と蘇ってきます。",
+                oshi: `画面を見ないと思い出せないゲームもありますが、『サクラ大戦』は前奏が流れただけで、30年前の記憶が自然と蘇ってきます。`,
                 type: "left"
             },
             {
                 name: "うなぎのぼり",
                 icon: "う",
-                oshi: "サクラ大戦は"見果てぬ夢"、これからも追い続けます！30周年おめでとうございます！！",
+                oshi: `サクラ大戦は"見果てぬ夢"、これからも追い続けます！30周年おめでとうございます！！`,
                 type: "left"
             },
             {
                 name: "えいたーソン",
                 icon: "え",
-                oshi: "まだファン2年目だけど自分が人生頑張れるきっかけを作ってくれてありがとうございます。",
+                oshi: `まだファン2年目だけど自分が人生頑張れるきっかけを作ってくれてありがとうございます。`,
                 type: "left"
             },
             {
                 name: "たぬなっつ",
                 icon: "た",
-                oshi: "青春時代をサクラ大戦と過ごせたことが宝です??",
+                oshi: `青春時代をサクラ大戦と過ごせたことが宝です??`,
                 type: "left"
             },
             {
                 name: "靖-Sei-",
                 icon: "靖",
-                oshi: "人生のほぼ全部丸ごとサクラ大戦と生きてきた。私の青春！私の生きがい！<br>
-                    サクラのおかげで歌が好きでお芝居が好きで本が好きな私になれました。ありがとう！30周年おめでとう！",
+                oshi: `人生のほぼ全部丸ごとサクラ大戦と生きてきた。私の青春！私の生きがい！<br>
+サクラのおかげで歌が好きでお芝居が好きで本が好きな私になれました。ありがとう！30周年おめでとう！`,
                 type: "left"
             },
             {
                 name: "風組小簡",
                 icon: "風",
-                oshi: "『サクラ大戦』、素晴らしい30年の青春を一緒に歩んでくれてありがとう。これからもずっと、一緒に歩んでいきます。",
+                oshi: `『サクラ大戦』、素晴らしい30年の青春を一緒に歩んでくれてありがとう。これからもずっと、一緒に歩んでいきます。`,
                 type: "left"
             },
             {
                 name: "ふみ",
                 icon: "ふ",
-                oshi: "子供の頃から気がついたら知ってて、大人になった今もずっと大好きです！<br>
-これからも夢のつづきをみていたい",
+                oshi: `子供の頃から気がついたら知ってて、大人になった今もずっと大好きです！<br>
+これからも夢のつづきをみていたい`,
                 type: "left"
             },
             {
                 name: "19年目の掃除人",
                 icon: "19",
-                oshi: "小学生の時に初めて連れて行かれた歌謡ショウ<br>
+                oshi: `小学生の時に初めて連れて行かれた歌謡ショウ<br>
 今では中嶋親方の言葉を胸に、舞台袖で奔走しています<br><br>
 
 ツラいことも理不尽なこともサクラ大戦に、歌謡ショウに出会えたから乗り越えられる<br>
 舞台の神様が見ていてくれる<br>
-心からそう思えることに、感謝",
+心からそう思えることに、感謝`,
                 type: "left"
             },
             {
                 name: "翔",
                 icon: "翔",
-                oshi: "初代サクラ大戦と同い年で高校生の頃に初代をプレイしてから2、3、4、Vと全シリーズプレイしましたが、<br>
-                    現在も今までプレイしてきたゲーム作品の中でも1番好きなシリーズ作品です！！",
+                oshi: `初代サクラ大戦と同い年で高校生の頃に初代をプレイしてから2、3、4、Vと全シリーズプレイしましたが、<br>
+現在も今までプレイしてきたゲーム作品の中でも1番好きなシリーズ作品です！！`,
                 type: "left"
             },
             {
                 name: "甲貴",
                 icon: "甲",
-                oshi: "サクラ大戦ずっと大好きです！<br>
+                oshi: `サクラ大戦ずっと大好きです！<br>
 当時のグラフィック技術、アニメ映像の感動を忘れたことはありません！<br>
 キャラデザイン、声優の皆さん、映像制作の方々、作詞作曲の方々、サクラ大戦に携わった全ての皆さんに感謝しかありません。<br>
 大好きな作品です！<br>
 自分自身のオタクの原点です！<br>
-これからも応援してます！",
+これからも応援してます！`,
                 type: "left"
             },
             {
                 name: "リンセイ",
                 icon: "リ",
-                oshi: "私の青春、今の私があるのも全てはサクラ大戦から。",
+                oshi: `私の青春、今の私があるのも全てはサクラ大戦から。`,
                 type: "left"
             },
             {
                 name: "kanako",
                 icon: "k",
-                oshi: "15週年の《太正浪漫グラフ》に、松原先生はサクラは自分にとってライフワークだとおっしゃいましたが、さらに15年を経って、30週年<br>
-を迎える今、毎年先生が新作を描き、まさにその通りです。サクラを続けてくださって、感激です！",
+                oshi: `15週年の《太正浪漫グラフ》に、松原先生はサクラは自分にとってライフワークだとおっしゃいましたが、さらに15年を経って、30週年<br>
+を迎える今、毎年先生が新作を描き、まさにその通りです。サクラを続けてくださって、感激です！`,
                 type: "left"
             },
             {
                 name: "ゆっけ",
                 icon: "ゆ",
-                oshi: "マリア、俺の人生に現れてくれてありがとう。<br>
+                oshi: `マリア、俺の人生に現れてくれてありがとう。<br>
 君と出会えたことを誇りに思う。<br><br>
 
 いつまでも愛しているよ。俺の運命、優雅な月よ……。<br><br>
 
-サクラ大戦30周年、おめでとう。",
-               
+サクラ大戦30周年、おめでとう。`,
                 type: "left"
             },
             {
                 name: "ノノリリ",
                 icon: "ノ",
-                oshi: "別のゲームをしたくて買ったセガサターン<br>
-あの時セガサターン買わなければサクラ大戦との出会いも無かったかもしれません！",
-
+                oshi: `別のゲームをしたくて買ったセガサターン<br>
+あの時セガサターン買わなければサクラ大戦との出会いも無かったかもしれません！`,
                 type: "left"
             },
             {
                 name: "兼田ライ",
                 icon: "兼",
-                oshi: "アンケートの意図と違って要望なのですが…、2026年1月の大阪のイベントで松原先生が書き下ろされたあやめの色紙、<br>
-                    可愛すぎるのでグッズにして売って欲しいです。ご検討のほどよろしくお願いします。",
-                
+                oshi: `アンケートの意図と違って要望なのですが…、2026年1月の大阪のイベントで松原先生が書き下ろされたあやめの色紙、<br>
+可愛すぎるのでグッズにして売って欲しいです。ご検討のほどよろしくお願いします。`,
                 type: "left"
             },
             {
                 name: "牛肉メタル",
                 icon: "牛",
-                oshi: "祝30周年<br>
-よし、花見の準備をせよ！",
+                oshi: `祝30周年<br>
+よし、花見の準備をせよ！`,
                 type: "left"
             },
             {
                 name: "花火師",
                 icon: "花",
-                oshi: "サクラ大戦は永遠に大好きです！！",
+                oshi: `サクラ大戦は永遠に大好きです！！`,
                 type: "left"
             },
             {
                 name: "長澤航志",
                 icon: "長",
-                oshi: "サクラ大戦30thおめでとうございます！ファン歴2年でまだまだ浅いですが、サクラと出会ってから日常が明るくなりました。<br>
-                    満開のアニバーサリーになりますように！",
+                oshi: `サクラ大戦30thおめでとうございます！ファン歴2年でまだまだ浅いですが、サクラと出会ってから日常が明るくなりました。<br>
+満開のアニバーサリーになりますように！`,
                 type: "left"
             },
             {
                 name: "39",
                 icon: "39",
-                oshi: "紅蘭と出会ってから、30年間ずっと一番大好きです。またゲームの中で会いたいです！",
+                oshi: `紅蘭と出会ってから、30年間ずっと一番大好きです。またゲームの中で会いたいです！`,
                 type: "left"
             },
             {
                 name: "ピアノ",
                 icon: "ピ",
-                oshi: "懐かしいなあ。もう30年か。また初めから見直したいです。",
+                oshi: `懐かしいなあ。もう30年か。また初めから見直したいです。`,
                 type: "left"
             },
             {
                 name: "まりあん",
                 icon: "ま",
-                oshi: "サクラ大戦は私の人生！この先もずっと永遠に！<br><br>
+                oshi: `サクラ大戦は私の人生！この先もずっと永遠に！<br><br>
 
 サクラ大戦のおかげでかけがえのない友人達、そして旦那さんに出会うことができました。<br>
-30年経っても語り合える人たちが近くにいるのは本当に幸せです。",
+30年経っても語り合える人たちが近くにいるのは本当に幸せです。`,
                 type: "left"
             },
             {
                 name: "ゆに",
                 icon: "ゆ",
-                oshi: "30周年おめでとうございます！<br>
+                oshi: `30周年おめでとうございます！<br>
 たくさんの出会いや幸せをくれたサクラ大戦…自分にとって本当に大切な作品です。<br>
-これからもずっとサクラ大戦を愛し、応援し続けます。",
+これからもずっとサクラ大戦を愛し、応援し続けます。`,
                 type: "left"
             },
             {
                 name: "みなみん",
                 icon: "み",
-                oshi: "ここまで愛にあふれるファン、演者のいる作品は他にいるだろうか？<br>
-                    放送当時サクラ大戦TVと巡り会えたことに感謝、サクラ大戦との出会いに感謝",
+                oshi: `ここまで愛にあふれるファン、演者のいる作品は他にいるだろうか？<br>
+放送当時サクラ大戦TVと巡り会えたことに感謝、サクラ大戦との出会に感謝`,
                 type: "left"
             },
             {
                 name: "riri",
                 icon: "ri",
-                oshi: "『サクラ大戦』というIPに出会ってからはまだ日が浅いのですが、ゲームを通じて、今のゲームでは味わえない当時のままの感動をそのまま<br>
+                oshi: `『サクラ大戦』というIPに出会ってからはまだ日が浅いのですが、ゲームを通じて、今のゲームでは味わえない当時のままの感動をそのまま<br>
 体験することができました。ゲーム、アニメ、OVA、音楽、歌謡ショウなど、どのメディアからも制作陣の作品に対する深い愛が伝わって<br>
-きて、制作チームとファンの皆さんの間に築かれた強い絆が本当に大好きです！私は一生、『サクラ大戦』を愛し続けます。",
+きて、制作チームとファンの皆さんの間に築かれた強い絆が本当に大好きです！私は一生、『サクラ大戦』を愛し続けます。`,
                 type: "left"
             },
             {
                 name: "井芹光臣",
                 icon: "井",
-                oshi: "サクラ大戦は人生にとって心の支えになる作品です。",
+                oshi: `サクラ大戦は人生にとって心の支えになる作品です。`,
                 type: "left"
-            },
-            
+            }
         ];
-
-        // =========================================================
-        // ★★★ 制御ロジック（フィルタ・ページネーション・ランダム） ★★★
-        // =========================================================
-
-        // 配列をランダムにシャッフルする関数
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
-
-        // ページロード時にシャッフル実行
-        shuffleArray(commentsData);
-        
-        const itemsPerPage = 10;
-        let currentPage = 1;
-        let filteredData = [...commentsData]; // 初期状態は全データ（シャッフル済み）
-
-        const commentsArea = document.getElementById('comments-area');
-        const paginationContainer = document.getElementById('pagination-container');
-        const noResultDiv = document.getElementById('noResult');
-
-        // 監視オプション
-        const options = { root: null, rootMargin: "0px 0px -20% 0px", threshold: 0 };
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, options);
-
-        // 検索機能（修正済み）
-        function filterData() {
-            const query = document.getElementById('searchInput').value.trim().toLowerCase();
-
-            if (!query) {
-                // 空なら全件（現在のシャッフル状態を維持）
-                filteredData = [...commentsData];
-            } else {
-                // 名前 OR 推しキャラ名でフィルタ（大文字小文字無視、部分一致）
-                filteredData = commentsData.filter(item => 
-                    item.name.toLowerCase().includes(query) ||
-                    item.oshi.toLowerCase().includes(query)
-                );
-            }
-
-            // ページを1に戻して再描画
-            currentPage = 1;
-            renderPage(currentPage);
-        }
-
-        // ページを描画する関数
-        function renderPage(page) {
-            commentsArea.innerHTML = "";
-            
-            // 検索結果がない場合
-            if (filteredData.length === 0) {
-                noResultDiv.style.display = 'block';
-                paginationContainer.innerHTML = ''; // ページネーションも消す
-                return;
-            } else {
-                noResultDiv.style.display = 'none';
-            }
-
-            const start = (page - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const pageData = filteredData.slice(start, end);
-
-            pageData.forEach(data => {
-                const html = `
-                    <div class="comment-item ${data.type}">
-                        <div class="icon">${data.icon}</div>
-                        <div>
-                            <div class="bubble-content">
-                                【君とつないだ30周年、サクラ大戦への愛を一言！】<br><strong>${data.oshi}</strong><br>
-                                　<br>
-                            </div>
-                            <div class="meta-info">${data.name}</div>
-                        </div>
-                    </div>
-                `;
-                commentsArea.insertAdjacentHTML('beforeend', html);
-            });
-
-            // アニメーション適用
-            setTimeout(() => {
-                document.querySelectorAll('.comment-item').forEach(item => {
-                    observer.observe(item);
-                });
-            }, 50);
-
-            // ページネーション作成
-            createPagination();
-            
-            // ページトップへスクロール
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // 番号付きページネーション生成
-        function createPagination() {
-            paginationContainer.innerHTML = '';
-            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-
-            // 1ページのみならページネーション不要
-            if (totalPages <= 1) return;
-
-            // 「前へ」ボタン
-            const prevBtn = document.createElement('button');
-            prevBtn.textContent = '＜';
-            prevBtn.className = 'nav-btn';
-            prevBtn.disabled = (currentPage === 1);
-            prevBtn.onclick = () => changePage(-1);
-            paginationContainer.appendChild(prevBtn);
-
-            // 数字ボタン
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement('button');
-                btn.textContent = i;
-                btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
-                btn.onclick = () => {
-                    currentPage = i;
-                    renderPage(currentPage);
-                };
-                paginationContainer.appendChild(btn);
-            }
-
-            // 「次へ」ボタン
-            const nextBtn = document.createElement('button');
-            nextBtn.textContent = '＞';
-            nextBtn.className = 'nav-btn';
-            nextBtn.disabled = (currentPage === totalPages);
-            nextBtn.onclick = () => changePage(1);
-            paginationContainer.appendChild(nextBtn);
-        }
-
-        // 前後移動用
-        function changePage(delta) {
-            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-            const newPage = currentPage + delta;
-            if (newPage >= 1 && newPage <= totalPages) {
-                currentPage = newPage;
-                renderPage(currentPage);
-            }
-        }
-
-        // 初期表示
-        renderPage(currentPage);
-
-    </script>
-</body>
-</html>
