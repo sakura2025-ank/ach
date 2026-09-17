@@ -1,185 +1,186 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>「君とつないだ30周年、サクラ大戦への愛を一言！」</title>
-    <style>
-        /* --- ベーススタイル --- */
-        body {
-            font-family: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "HGS Mincho E", "Helvetica Neue", Arial, serif;
-            margin: 0; padding: 0; color: #333;
-            background: url('https://i.imgur.com/isf7ItI.png') no-repeat center center fixed;
-            background-size: cover; 
-            min-height: 100vh;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>「君とつないだ30周年、サクラ大戦への愛を一言！」</title>
+    <style>
+        /* --- ベーススタイル --- */
+        body {
+            font-family: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "HGS Mincho E", "Helvetica Neue", Arial, serif;
+            margin: 0; padding: 0; color: #333;
+            background: url('https://i.imgur.com/isf7ItI.png') no-repeat center center fixed;
+            background-size: cover; 
+            min-height: 100vh;
+        }
 
-        .container {
-            max-width: 700px; margin: 0 auto; padding: 40px 20px 50px;
-            min-height: 100vh;
-            background-color: rgba(255, 252, 253, 0.85); 
-            backdrop-filter: blur(5px);
-        }
+        .container {
+            max-width: 700px; margin: 0 auto; padding: 40px 20px 50px;
+            min-height: 100vh;
+            background-color: rgba(255, 252, 253, 0.85); 
+            backdrop-filter: blur(5px);
+        }
 
-        h1 { text-align: center; margin-bottom: 20px; }
-        h2 { text-align: center; font-size: 18px; color: #8c5e5e; margin-bottom: 30px; text-shadow: 1px 1px 0 #fff; }
+        h1 { text-align: center; margin-bottom: 20px; }
+        h2 { text-align: center; font-size: 18px; color: #8c5e5e; margin-bottom: 30px; text-shadow: 1px 1px 0 #fff; }
 
-        /* --- 検索ボックスのスタイル --- */
-        .search-container {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .search-input {
-            padding: 10px 15px;
-            width: 80%;
-            max-width: 300px;
-            border: 2px solid #ffb7c5;
-            border-radius: 25px;
-            font-size: 16px;
-            outline: none;
-            transition: all 0.3s;
-            color: #593030;
-        }
-        .search-input:focus {
-            border-color: #e08090;
-            box-shadow: 0 0 8px rgba(255, 183, 197, 0.5);
-        }
+        /* --- 検索ボックスのスタイル --- */
+        .search-container {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .search-input {
+            padding: 10px 15px;
+            width: 80%;
+            max-width: 300px;
+            border: 2px solid #ffb7c5;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+            color: #593030;
+        }
+        .search-input:focus {
+            border-color: #e08090;
+            box-shadow: 0 0 8px rgba(255, 183, 197, 0.5);
+        }
 
-        /* --- 吹き出しアニメーション --- */
-        .comment-item {
-            display: flex; align-items: flex-end; margin-bottom: 30px;
-            opacity: 0; transform: translateY(30px);
-            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .comment-item.visible { opacity: 1; transform: translateY(0); }
+        /* --- 吹き出しアニメーション --- */
+        .comment-item {
+            display: flex; align-items: flex-end; margin-bottom: 30px;
+            opacity: 0; transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .comment-item.visible { opacity: 1; transform: translateY(0); }
 
-        /* --- アイコン --- */
-        .icon {
-            width: 44px; height: 44px; background-color: #ccc; border-radius: 50%;
-            flex-shrink: 0; display: flex; justify-content: center; align-items: center;
-            font-size: 18px; color: white; font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15); border: 2px solid #fff; z-index: 2;
-        }
+        /* --- アイコン --- */
+        .icon {
+            width: 44px; height: 44px; background-color: #ccc; border-radius: 50%;
+            flex-shrink: 0; display: flex; justify-content: center; align-items: center;
+            font-size: 18px; color: white; font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15); border: 2px solid #fff; z-index: 2;
+        }
 
-        /* --- 吹き出し本体 --- */
-        .bubble-content {
-            max-width: 100%; padding: 15px 20px; position: relative;
-            font-size: 15px; line-height: 1.6;
-            box-shadow: 0 4px 10px rgba(255, 182, 193, 0.3); color: #593030;
-        }
-        .bubble-content strong { color: #d64a6e; font-weight: bold; }
-        
-        /* 花びら装飾 */
-        .bubble-content::after {
-            content: ''; position: absolute; width: 20px; height: 20px;
-            background-color: #ff9eb5; border-radius: 100% 0 100% 0;
-            opacity: 0.8; pointer-events: none;
-        }
-        .meta-info { font-size: 11px; color: #a07070; margin: 6px 8px 0; }
+        /* --- 吹き出し本体 --- */
+        .bubble-content {
+            max-width: 100%; padding: 15px 20px; position: relative;
+            font-size: 15px; line-height: 1.6;
+            box-shadow: 0 4px 10px rgba(255, 182, 193, 0.3); color: #593030;
+        }
+        .bubble-content strong { color: #d64a6e; font-weight: bold; }
+        
+        /* 花びら装飾 */
+        .bubble-content::after {
+            content: ''; position: absolute; width: 20px; height: 20px;
+            background-color: #ff9eb5; border-radius: 100% 0 100% 0;
+            opacity: 0.8; pointer-events: none;
+        }
+        .meta-info { font-size: 11px; color: #a07070; margin: 6px 8px 0; }
 
-        /* --- 左（通常） --- */
-        .comment-item.left .bubble-content {
-            background: linear-gradient(135deg, #fff0f5 0%, #ffdde6 100%);
-            border: 1px solid #ffccd7; margin-left: 15px;
-            border-radius: 20px 40px 20px 2px; 
-        }
-        .comment-item.left .icon { background-color: #e090a0; }
-        .comment-item.left .bubble-content::after {
-            top: -8px; right: -8px; transform: rotate(-15deg);
-        }
+        /* --- 左（通常） --- */
+        .comment-item.left .bubble-content {
+            background: linear-gradient(135deg, #fff0f5 0%, #ffdde6 100%);
+            border: 1px solid #ffccd7; margin-left: 15px;
+            border-radius: 20px 40px 20px 2px; 
+        }
+        .comment-item.left .icon { background-color: #e090a0; }
+        .comment-item.left .bubble-content::after {
+            top: -8px; right: -8px; transform: rotate(-15deg);
+        }
 
-        /* --- 右（強調） --- */
-        .comment-item.right { flex-direction: row-reverse; }
-        .comment-item.right .bubble-content {
-            background: linear-gradient(135deg, #fafff5 0%, #ecf7e4 100%);
-            border: 1px solid #d0e0c0; margin-right: 15px;
-            border-radius: 40px 20px 2px 20px;
-        }
-        .comment-item.right .meta-info { text-align: right; }
-        .comment-item.right .icon { background-color: #88c070; }
-        .comment-item.right .bubble-content::after {
-            background-color: #a0d080; top: -8px; left: -8px; transform: rotate(75deg);
-        }
+        /* --- 右（強調） --- */
+        .comment-item.right { flex-direction: row-reverse; }
+        .comment-item.right .bubble-content {
+            background: linear-gradient(135deg, #fafff5 0%, #ecf7e4 100%);
+            border: 1px solid #d0e0c0; margin-right: 15px;
+            border-radius: 40px 20px 2px 20px;
+        }
+        .comment-item.right .meta-info { text-align: right; }
+        .comment-item.right .icon { background-color: #88c070; }
+        .comment-item.right .bubble-content::after {
+            background-color: #a0d080; top: -8px; left: -8px; transform: rotate(75deg);
+        }
 
-        /* --- ページネーション --- */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap; 
-            margin-top: 40px;
-            gap: 10px;
-        }
-        .page-btn {
-            padding: 8px 14px;
-            background-color: #fff;
-            color: #d64a6e;
-            border: 1px solid #ffb7c5;
-            border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-        }
-        .page-btn:hover {
-            background-color: #fff0f5;
-        }
-        /* 現在のページ */
-        .page-btn.active {
-            background-color: #e08090;
-            color: #fff;
-            border-color: #e08090;
-        }
-        /* 前へ・次へボタン */
-        .nav-btn {
-            background-color: #ffb7c5;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-        }
-        .nav-btn:hover {
-            background-color: #e08090;
-        }
-        .nav-btn:disabled {
-            background-color: #eee;
-            color: #aaa;
-            cursor: not-allowed;
-        }
-        .no-result {
-            text-align: center;
-            color: #8c5e5e;
-            margin-top: 20px;
-        }
+        /* --- ページネーション --- */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap; 
+            margin-top: 40px;
+            gap: 10px;
+        }
+        .page-btn {
+            padding: 8px 14px;
+            background-color: #fff;
+            color: #d64a6e;
+            border: 1px solid #ffb7c5;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        .page-btn:hover {
+            background-color: #fff0f5;
+        }
+        /* 現在のページ */
+        .page-btn.active {
+            background-color: #e08090;
+            color: #fff;
+            border-color: #e08090;
+        }
+        /* 前へ・次へボタン */
+        .nav-btn {
+            background-color: #ffb7c5;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+        .nav-btn:hover {
+            background-color: #e08090;
+        }
+        .nav-btn:disabled {
+            background-color: #eee;
+            color: #aaa;
+            cursor: not-allowed;
+        }
+        .no-result {
+            text-align: center;
+            color: #8c5e5e;
+            margin-top: 20px;
+        }
 
-    </style>
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1 style="margin-top: 0;">
-            <img src="https://i.imgur.com/FqoUTDa.jpeg" alt="サクラ大戦アートフェスティバル" style="max-width: 100%; height: auto; display: block; margin: 0 auto;">
-        </h1>
-        <h2>『花組アートレビュウ！』<br><span style="font-size: 0.9em; font-weight: normal;">～君とつないだ30周年、サクラ大戦への愛を一言！～</span></h2>
+    <div class="container">
+        <h1 style="margin-top: 0;">
+            <img src="https://i.imgur.com/FqoUTDa.jpeg" alt="サクラ大戦アートフェスティバル" style="max-width: 100%; height: auto; display: block; margin: 0 auto;">
+        </h1>
+        <h2>『花組アートレビュウ！』<br><span style="font-size: 0.9em; font-weight: normal;">～君とつないだ30周年、サクラ大戦への愛を一言！～</span></h2>
 
-        <!-- 検索ボックス（プレースホルダー変更） -->
-        <div class="search-container">
-            <input type="text" id="searchInput" class="search-input" placeholder="名前で検索..." oninput="filterData()">
-        </div>
+        <!-- 検索ボックス（プレースホルダー変更） -->
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="名前で検索..." oninput="filterData()">
+        </div>
 
-        <!-- コメントエリア -->
-        <div id="comments-area"></div>
-        <div id="noResult" class="no-result" style="display: none;">該当するコメントは見つかりませんでした。</div>
+        <!-- コメントエリア -->
+        <div id="comments-area"></div>
+        <div id="noResult" class="no-result" style="display: none;">該当するコメントは見つかりませんでした。</div>
 
-        <!-- ページ切り替えボタン -->
-        <div class="pagination" id="pagination-container"></div>
-        
-    </div>
+        <!-- ページ切り替えボタン -->
+        <div class="pagination" id="pagination-container"></div>
+        
+    </div>
 
-    <script>
-        // =========================================================
-        // ★★★ データ部分 ★★★
-        // =========================================================
-        const commentsData = [
+    <script>
+        // =========================================================
+        // ★★★ データ部分 ★★★
+        // ※改行を含む文字列は必ずバッククォート（`）で囲んでいます
+        // =========================================================
+        const commentsData = [
             {
                 name: "ひなた",
                 icon: "ひ",
@@ -489,159 +490,157 @@ beで観てたら、真宮寺さくらさんがリアルに出てて、女優さ
             }
         ];
 
-        // =========================================================
-        // ★★★ 制御ロジック（フィルタ・ページネーション・ランダム） ★★★
-        // =========================================================
+        // =========================================================
+        // ★★★ 制御ロジック（フィルタ・ページネーション・ランダム） ★★★
+        // =========================================================
 
-        // 配列をランダムにシャッフルする関数
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
+        // 配列をランダムにシャッフルする関数
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
 
-        // ページロード時にシャッフル実行
-        shuffleArray(commentsData);
-        
-        const itemsPerPage = 10;
-        let currentPage = 1;
-        let filteredData = [...commentsData]; // 初期状態は全データ（シャッフル済み）
+        // ページロード時にシャッフル実行
+        shuffleArray(commentsData);
+        
+        const itemsPerPage = 10;
+        let currentPage = 1;
+        let filteredData = [...commentsData]; // 初期状態は全データ（シャッフル済み）
 
-        const commentsArea = document.getElementById('comments-area');
-        const paginationContainer = document.getElementById('pagination-container');
-        const noResultDiv = document.getElementById('noResult');
+        const commentsArea = document.getElementById('comments-area');
+        const paginationContainer = document.getElementById('pagination-container');
+        const noResultDiv = document.getElementById('noResult');
 
-        // 監視オプション
-        const options = { root: null, rootMargin: "0px 0px -20% 0px", threshold: 0 };
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, options);
+        // 監視オプション
+        const options = { root: null, rootMargin: "0px 0px -20% 0px", threshold: 0 };
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, options);
 
-        // 検索機能（修正済み）
-        function filterData() {
-            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+        // 検索機能
+        function filterData() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
 
-            if (!query) {
-                // 空なら全件（現在のシャッフル状態を維持）
-                filteredData = [...commentsData];
-            } else {
-                // 名前 OR 推しキャラ名でフィルタ（大文字小文字無視、部分一致）
-                filteredData = commentsData.filter(item => 
-                    item.name.toLowerCase().includes(query) ||
-                    item.oshi.toLowerCase().includes(query)
-                );
-            }
+            if (!query) {
+                // 空なら全件（現在のシャッフル状態を維持）
+                filteredData = [...commentsData];
+            } else {
+                // 名前 OR 推しキャラ名でフィルタ（大文字小文字無視、部分一致）
+                filteredData = commentsData.filter(item => 
+                    item.name.toLowerCase().includes(query) ||
+                    item.oshi.toLowerCase().includes(query)
+                );
+            }
 
-            // ページを1に戻して再描画
-            currentPage = 1;
-            renderPage(currentPage);
-        }
+            // ページを1に戻して再描画
+            currentPage = 1;
+            renderPage(currentPage);
+        }
 
-        // ページを描画する関数
-        function renderPage(page) {
-            commentsArea.innerHTML = "";
-            
-            // 検索結果がない場合
-            if (filteredData.length === 0) {
-                noResultDiv.style.display = 'block';
-                paginationContainer.innerHTML = ''; // ページネーションも消す
-                return;
-            } else {
-                noResultDiv.style.display = 'none';
-            }
+        // ページを描画する関数
+        function renderPage(page) {
+            commentsArea.innerHTML = "";
+            
+            // 検索結果がない場合
+            if (filteredData.length === 0) {
+                noResultDiv.style.display = 'block';
+                paginationContainer.innerHTML = ''; // ページネーションも消す
+                return;
+            } else {
+                noResultDiv.style.display = 'none';
+            }
 
-            const start = (page - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const pageData = filteredData.slice(start, end);
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageData = filteredData.slice(start, end);
 
-            pageData.forEach(data => {
-                const html = `
-                    <div class="comment-item ${data.type}">
-                        <div class="icon">${data.icon}</div>
-                        <div>
-                            <div class="bubble-content">
-                                【君とつないだ30周年、サクラ大戦への愛を一言！】<br><strong>${data.oshi}</strong><br>
-                                　<br>
-                            </div>
-                            <div class="meta-info">${data.name}</div>
-                        </div>
-                    </div>
-                `;
-                commentsArea.insertAdjacentHTML('beforeend', html);
-            });
+            pageData.forEach(data => {
+                const html = `
+                    <div class="comment-item ${data.type}">
+                        <div class="icon">${data.icon}</div>
+                        <div>
+                            <div class="bubble-content">
+                                【君とつないだ30周年、サクラ大戦への愛を一言！】<br><strong>${data.oshi}</strong><br>
+                                 <br>
+                            </div>
+                            <div class="meta-info">${data.name}</div>
+                        </div>
+                    </div>
+                `;
+                commentsArea.insertAdjacentHTML('beforeend', html);
+            });
 
-            // アニメーション適用
-            setTimeout(() => {
-                document.querySelectorAll('.comment-item').forEach(item => {
-                    observer.observe(item);
-                });
-            }, 50);
+            // アニメーション適用
+            setTimeout(() => {
+                document.querySelectorAll('.comment-item').forEach(item => {
+                    observer.observe(item);
+                });
+            }, 50);
 
-            // ページネーション作成
-            createPagination();
-            
-            // ページトップへスクロール
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+            // ページネーション作成
+            createPagination();
+            
+            // ページトップへスクロール
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-        // 番号付きページネーション生成
-        function createPagination() {
-            paginationContainer.innerHTML = '';
-            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+        // 番号付きページネーション生成
+        function createPagination() {
+            paginationContainer.innerHTML = '';
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-            // 1ページのみならページネーション不要
-            if (totalPages <= 1) return;
+            // 1ページのみならページネーション不要
+            if (totalPages <= 1) return;
 
-            // 「前へ」ボタン
-            const prevBtn = document.createElement('button');
-            prevBtn.textContent = '＜';
-            prevBtn.className = 'nav-btn';
-            prevBtn.disabled = (currentPage === 1);
-            prevBtn.onclick = () => changePage(-1);
-            paginationContainer.appendChild(prevBtn);
+            // 「前へ」ボタン
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = '＜';
+            prevBtn.className = 'nav-btn';
+            prevBtn.disabled = (currentPage === 1);
+            prevBtn.onclick = () => changePage(-1);
+            paginationContainer.appendChild(prevBtn);
 
-            // 数字ボタン
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement('button');
-                btn.textContent = i;
-                btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
-                btn.onclick = () => {
-                    currentPage = i;
-                    renderPage(currentPage);
-                };
-                paginationContainer.appendChild(btn);
-            }
+            // 数字ボタン
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                btn.onclick = () => {
+                    currentPage = i;
+                    renderPage(currentPage);
+                };
+                paginationContainer.appendChild(btn);
+            }
 
-            // 「次へ」ボタン
-            const nextBtn = document.createElement('button');
-            nextBtn.textContent = '＞';
-            nextBtn.className = 'nav-btn';
-            nextBtn.disabled = (currentPage === totalPages);
-            nextBtn.onclick = () => changePage(1);
-            paginationContainer.appendChild(nextBtn);
-        }
+            // 「次へ」ボタン
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = '＞';
+            nextBtn.className = 'nav-btn';
+            nextBtn.disabled = (currentPage === totalPages);
+            nextBtn.onclick = () => changePage(1);
+            paginationContainer.appendChild(nextBtn);
+        }
 
-        // 前後移動用
-        function changePage(delta) {
-            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-            const newPage = currentPage + delta;
-            if (newPage >= 1 && newPage <= totalPages) {
-                currentPage = newPage;
-                renderPage(currentPage);
-            }
-        }
+        // 前後移動用
+        function changePage(delta) {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            const newPage = currentPage + delta;
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                renderPage(currentPage);
+            }
+        }
 
-        // 初期表示
-        renderPage(currentPage);
+        // 初期表示
+        renderPage(currentPage);
 
-    </script>
+    </script>
 </body>
 </html>
-
-このコードでバグを探してほしい
