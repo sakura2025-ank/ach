@@ -45,13 +45,15 @@
             box-shadow: 0 0 8px rgba(255, 183, 197, 0.5);
         }
 
-        /* --- 吹き出しアニメーション --- */
+        /* --- 吹き出しアニメーション（CSSのみで確実に表示） --- */
         .comment-item {
             display: flex; align-items: flex-end; margin-bottom: 30px;
-            opacity: 0; transform: translateY(30px);
-            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
-        .comment-item.visible { opacity: 1; transform: translateY(0); }
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
 
         /* --- アイコン --- */
         .icon {
@@ -161,7 +163,7 @@
         </h1>
         <h2>『花組アートレビュウ！』<br><span style="font-size: 0.9em; font-weight: normal;">～君とつないだ30周年、サクラ大戦への愛を一言！～</span></h2>
 
-        <!-- 検索ボックス（プレースホルダー変更） -->
+        <!-- 検索ボックス -->
         <div class="search-container">
             <input type="text" id="searchInput" class="search-input" placeholder="名前で検索..." oninput="filterData()">
         </div>
@@ -178,7 +180,6 @@
     <script>
         // =========================================================
         // ★★★ データ部分 ★★★
-        // ※改行を含む文字列は必ずバッククォート（`）で囲んでいます
         // =========================================================
         const commentsData = [
             {
@@ -495,7 +496,7 @@ beで観てたら、真宮寺さくらさんがリアルに出てて、女優さ
 初めて激!帝国華撃団を聴いた時からこの作品の虜です?`,
                 type: "left"
             },
-        {
+            {
                 name: "白玉兎",
                 icon: "白",
                 oshi: `アニメから入り、小説、ポケット、GB、熱きと追ってきた者です<br>
@@ -503,7 +504,7 @@ beで観てたら、真宮寺さくらさんがリアルに出てて、女優さ
 私は今でもずっとサクラ大戦が大好き！！！`,
                 type: "left"
             },
-        {
+            {
                 name: "せーじ",
                 icon: "せ",
                 oshi: `サクラ大戦は俺にとって始めてプレイしたゲームでこのシリーズは全てプレイさせていただきました。アニメも漫画も観させていただきました。<br>
@@ -511,26 +512,26 @@ beで観てたら、真宮寺さくらさんがリアルに出てて、女優さ
 コレからシリーズかすることがありましたら、ずっと応援します。`,
                 type: "left"
             },
-        {
+            {
                 name: "ノノリリ",
                 icon: "ノ",
                 oshi: `前回のアートフェスティバルで質問にあがった画集検討をお願いします<br>
 サクラ大戦30周年を記憶と記録に残したいために！`,
                 type: "left"
             },
-        {
+            {
                 name: "音宮柚葉",
                 icon: "音",
                 oshi: `サクラ大戦は私にとって人生のバイブルです！`,
                 type: "left"
             },
-        {
+            {
                 name: "ともち",
                 icon: "と",
                 oshi: `一生ナンバーワンでオンリーワンです。出会えたことに感謝します。`,
                 type: "left"
             },
-        {
+            {
                 name: "かぬアイ",
                 icon: "か",
                 oshi: `セガサターンの初代からずーーーーっと!一番大好きなゲームです。<br>
@@ -542,14 +543,14 @@ beで観てたら、真宮寺さくらさんがリアルに出てて、女優さ
 どうかこのサクラ愛!ずっと続いていってください。`,
                 type: "left"
             },
-        {
+            {
                 name: "N@Cナック",
                 icon: "N",
                 oshi: `私のオタクとしての骨はサクラ大戦から始まりサクラ大戦で形成されています<br><br>
 
 この作品が無かったらオタクとしての道を進んでいなかったと言っても過言ではありません`,
                 type: "left"
-            },
+            }
         ];
 
         // =========================================================
@@ -575,33 +576,19 @@ beで観てたら、真宮寺さくらさんがリアルに出てて、女優さ
         const paginationContainer = document.getElementById('pagination-container');
         const noResultDiv = document.getElementById('noResult');
 
-        // 監視オプション
-        const options = { root: null, rootMargin: "0px 0px -20% 0px", threshold: 0 };
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, options);
-
         // 検索機能
         function filterData() {
             const query = document.getElementById('searchInput').value.trim().toLowerCase();
 
             if (!query) {
-                // 空なら全件（現在のシャッフル状態を維持）
                 filteredData = [...commentsData];
             } else {
-                // 名前 OR 推しキャラ名でフィルタ（大文字小文字無視、部分一致）
                 filteredData = commentsData.filter(item => 
                     item.name.toLowerCase().includes(query) ||
                     item.oshi.toLowerCase().includes(query)
                 );
             }
 
-            // ページを1に戻して再描画
             currentPage = 1;
             renderPage(currentPage);
         }
@@ -610,10 +597,9 @@ beで観てたら、真宮寺さくらさんがリアルに出てて、女優さ
         function renderPage(page) {
             commentsArea.innerHTML = "";
             
-            // 検索結果がない場合
             if (filteredData.length === 0) {
                 noResultDiv.style.display = 'block';
-                paginationContainer.innerHTML = ''; // ページネーションも消す
+                paginationContainer.innerHTML = ''; 
                 return;
             } else {
                 noResultDiv.style.display = 'none';
@@ -639,13 +625,6 @@ beで観てたら、真宮寺さくらさんがリアルに出てて、女優さ
                 commentsArea.insertAdjacentHTML('beforeend', html);
             });
 
-            // アニメーション適用
-            setTimeout(() => {
-                document.querySelectorAll('.comment-item').forEach(item => {
-                    observer.observe(item);
-                });
-            }, 50);
-
             // ページネーション作成
             createPagination();
             
@@ -658,10 +637,8 @@ beで観てたら、真宮寺さくらさんがリアルに出てて、女優さ
             paginationContainer.innerHTML = '';
             const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-            // 1ページのみならページネーション不要
             if (totalPages <= 1) return;
 
-            // 「前へ」ボタン
             const prevBtn = document.createElement('button');
             prevBtn.textContent = '＜';
             prevBtn.className = 'nav-btn';
@@ -669,7 +646,6 @@ beで観てたら、真宮寺さくらさんがリアルに出てて、女優さ
             prevBtn.onclick = () => changePage(-1);
             paginationContainer.appendChild(prevBtn);
 
-            // 数字ボタン
             for (let i = 1; i <= totalPages; i++) {
                 const btn = document.createElement('button');
                 btn.textContent = i;
@@ -681,7 +657,6 @@ beで観てたら、真宮寺さくらさんがリアルに出てて、女優さ
                 paginationContainer.appendChild(btn);
             }
 
-            // 「次へ」ボタン
             const nextBtn = document.createElement('button');
             nextBtn.textContent = '＞';
             nextBtn.className = 'nav-btn';
